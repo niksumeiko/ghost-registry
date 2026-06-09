@@ -6,7 +6,7 @@ Used for training purpose within [Better Engineering Community](https://www.with
 
 ## Prerequisites
 
-- Node.js 20+
+- Node.js 22.18+
 - npm
 
 ## Getting started
