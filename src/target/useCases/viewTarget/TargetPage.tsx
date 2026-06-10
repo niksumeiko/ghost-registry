@@ -11,8 +11,15 @@ import {
     SecondaryButton,
     Stripe,
 } from '@design-system';
+import { useQuery } from '@tanstack/react-query';
+import { fetchNextTarget } from '../../domain/GhostAdapter';
 
 export const TargetPage = () => {
+    const query = useQuery({
+        queryKey: ['next-target'],
+        queryFn: fetchNextTarget,
+    });
+
     return (
         <Layout>
             <Stripe>
