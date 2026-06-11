@@ -2,6 +2,7 @@ import {
     ButtonGroup,
     Checkbox,
     ContentLayout,
+    FormError,
     FormField,
     HeadingTitle,
     Layout,
@@ -20,6 +21,12 @@ export const EditGhostPage = () => {
         queryKey: ['ghost', id],
         queryFn: () => fetchGhostById(id),
     });
+    // state: 'LOADING' | 'ERROR' | 'DENIED' | 'INITIAL' | 'SUBMITTING';
+    // name: string;
+    // isCaught: boolean;
+    // error?: string;
+    //
+    // Input: GET query, PATCH mutation
 
     return (
         <Layout>
@@ -30,10 +37,14 @@ export const EditGhostPage = () => {
             <ContentLayout>
                 <form>
                     <FormField label="Ghost name">
-                        <TextInput name="name" defaultValue="Slimer" />
+                        <TextInput name="name" defaultValue={model.name} />
                     </FormField>
-                    <Checkbox name="caught" label="Secured in the registry" />
-                    {/*<FormError>Ghost name can have only letters</FormError>*/}
+                    <Checkbox
+                        name="caught"
+                        label="Secured in the registry"
+                        defaultChecked={model.isCaught}
+                    />
+                    {model.error && <FormError>{model.error}</FormError>}
                     <ButtonGroup>
                         <PrimaryButton type="submit">Save</PrimaryButton>
                     </ButtonGroup>
