@@ -7,14 +7,16 @@ import {
     HeadingTitle,
     Layout,
     Logo,
+    Paragraph,
     PrimaryButton,
     Stripe,
     TextInput,
 } from '@design-system';
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { fetchGhostById, updateGhostById } from '../../domain/GhostAdapter.ts';
 import { Ghost } from '../../domain/GhostService.ts';
+import { createEditGhostPageModel } from './EditGhostPageModelService.ts';
 
 export const EditGhostPage = () => {
     const { id } = useParams() as { id: string };
@@ -30,12 +32,60 @@ export const EditGhostPage = () => {
             return updateGhostById(id, changes);
         },
     });
+    const model = createEditGhostPageModel(query, mutation);
     // state: 'LOADING' | 'ERROR' | 'DENIED' | 'INITIAL' | 'SUBMITTING';
     // name: string;
     // isCaught: boolean;
     // error?: string;
     //
     // Input: GET query, PATCH mutation
+
+    if (model.state === 'LOADING') {
+        return (
+            <Layout>
+                <Stripe>
+                    <Logo variant="xl" />
+                </Stripe>
+                <ContentLayout>
+                    <Paragraph>Loading...</Paragraph>
+                </ContentLayout>
+            </Layout>
+        );
+    }
+
+    if (model.state === 'ERROR') {
+        return (
+            <Layout>
+                <ContentLayout>
+                    <HeadingTitle level={1}>404</HeadingTitle>
+                    <Paragraph>Ghost not found.</Paragraph>
+                </ContentLayout>
+            </Layout>
+        );
+    }
+
+    if (model.state === 'DENIED') {
+        return (
+            <Layout>
+                <Stripe variant="secondary">
+                    <Link
+                        to="/"
+                        className="text-sm hover:underline hover:decoration-dotted"
+                    >
+                        ← Back
+                    </Link>
+                    <Logo variant="sm" />
+                </Stripe>
+                <ContentLayout>
+                    <HeadingTitle level={1}>Access denied</HeadingTitle>
+                    <Paragraph>
+                        This ghost's record is readonly. Editing is not
+                        permitted.
+                    </Paragraph>
+                </ContentLayout>
+            </Layout>
+        );
+    }
 
     return (
         <Layout>
@@ -55,7 +105,12 @@ export const EditGhostPage = () => {
                     />
                     {model.error && <FormError>{model.error}</FormError>}
                     <ButtonGroup>
-                        <PrimaryButton type="submit">Save</PrimaryButton>
+                        <PrimaryButton
+                            type="submit"
+                            disabled={model.state === 'SUBMITTING'}
+                        >
+                            Save
+                        </PrimaryButton>
                     </ButtonGroup>
                 </form>
             </ContentLayout>
