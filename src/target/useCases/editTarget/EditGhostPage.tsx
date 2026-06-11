@@ -11,15 +11,24 @@ import {
     Stripe,
     TextInput,
 } from '@design-system';
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { useParams } from 'react-router-dom';
-import { fetchGhostById } from '../../domain/GhostAdapter.ts';
+import { fetchGhostById, updateGhostById } from '../../domain/GhostAdapter.ts';
+import { Ghost } from '../../domain/GhostService.ts';
 
 export const EditGhostPage = () => {
     const { id } = useParams() as { id: string };
     const query = useQuery({
         queryKey: ['ghost', id],
         queryFn: () => fetchGhostById(id),
+    });
+    const mutation = useMutation({
+        mutationFn: ({
+            id,
+            ...changes
+        }: Pick<Ghost, 'id' | 'name' | 'flags'>) => {
+            return updateGhostById(id, changes);
+        },
     });
     // state: 'LOADING' | 'ERROR' | 'DENIED' | 'INITIAL' | 'SUBMITTING';
     // name: string;

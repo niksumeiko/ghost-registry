@@ -23,3 +23,22 @@ export async function fetchGhostById(id: string) {
 
     return data;
 }
+
+export async function updateGhostById(
+    id: string,
+    changes: Pick<Ghost, 'name' | 'flags'>,
+) {
+    const response = await fetch(`http://localhost:3001/api/v1/ghost/${id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(changes),
+    });
+
+    if (!response.ok) {
+        throw new Error(response.statusText);
+    }
+
+    const data: Ghost = await response.json();
+
+    return data;
+}
