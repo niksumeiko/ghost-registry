@@ -1,3 +1,4 @@
+import { SyntheticEvent, useState } from 'react';
 import {
     ButtonGroup,
     Checkbox,
@@ -32,13 +33,27 @@ export const EditGhostPage = () => {
             return updateGhostById(id, changes);
         },
     });
-    const model = createEditGhostPageModel(query, mutation);
+    const [formError, setFormError] = useState<unknown>();
+    const model = createEditGhostPageModel(query, mutation, formError);
     // state: 'LOADING' | 'ERROR' | 'DENIED' | 'INITIAL' | 'SUBMITTING';
     // name: string;
     // isCaught: boolean;
     // error?: string;
     //
     // Input: GET query, PATCH mutation
+
+    const handleSubmit = (e: SyntheticEvent<HTMLFormElement>) => {
+        e.preventDefault();
+
+        try {
+            const formData = new FormData(e.currentTarget);
+
+            mutation.mutate(getValidPayloadOrThrow(formData, query.data!));
+            setFormError(undefined);
+        } catch (error) {
+            setFormError(error);
+        }
+    };
 
     if (model.state === 'LOADING') {
         return (
@@ -94,7 +109,7 @@ export const EditGhostPage = () => {
                 <Logo variant="sm" />
             </Stripe>
             <ContentLayout>
-                <form>
+                <form onSubmit={handleSubmit}>
                     <FormField label="Ghost name">
                         <TextInput name="name" defaultValue={model.name} />
                     </FormField>
