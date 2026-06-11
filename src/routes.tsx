@@ -2,6 +2,7 @@ import type { RouteObject } from 'react-router-dom';
 import { NavigationPage } from './navigator/useCases/navigate/NavigationPage.tsx';
 import { Layout } from '@design-system';
 import { TargetPage } from './target/useCases/viewTarget/TargetPage.tsx';
+import { EditGhostPage } from './target/useCases/editTarget/EditGhostPage.tsx';
 
 export const routes: RouteObject[] = [
     {
@@ -11,6 +12,10 @@ export const routes: RouteObject[] = [
     {
         path: '/next-target',
         element: <TargetPage />,
+    },
+    {
+        path: '/ghost/:id/edit',
+        element: <EditGhostPage />,
     },
     {
         path: '/restricted',
