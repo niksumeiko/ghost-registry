@@ -15,8 +15,10 @@ import {
 import { useQuery } from '@tanstack/react-query';
 import { fetchNextTarget } from '../../domain/GhostAdapter';
 import { createTargetPageModel } from './TargetPageModelService.ts';
+import { useNavigate } from 'react-router-dom';
 
 export const TargetPage = () => {
+    const navigate = useNavigate();
     const query = useQuery({
         queryKey: ['next-target'],
         queryFn: fetchNextTarget,
@@ -76,7 +78,11 @@ export const TargetPage = () => {
                 </List>
                 {model.isEditable && (
                     <ButtonGroup>
-                        <SecondaryButton>Edit</SecondaryButton>
+                        <SecondaryButton
+                            onClick={() => navigate(`/ghost/${model.id}/edit`)}
+                        >
+                            Edit
+                        </SecondaryButton>
                     </ButtonGroup>
                 )}
             </ContentLayout>
