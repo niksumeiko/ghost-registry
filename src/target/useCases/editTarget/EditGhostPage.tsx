@@ -47,12 +47,6 @@ export const EditGhostPage = () => {
     });
     const [formError, setFormError] = useState<unknown>();
     const model = createEditGhostPageModel(query, mutation, formError);
-    // state: 'LOADING' | 'ERROR' | 'DENIED' | 'INITIAL' | 'SUBMITTING';
-    // name: string;
-    // isCaught: boolean;
-    // error?: string;
-    //
-    // Input: GET query, PATCH mutation
 
     const handleSubmit = (e: SyntheticEvent<HTMLFormElement>) => {
         e.preventDefault();

@@ -7,12 +7,6 @@ import {
 import type { Ghost } from '../../../domain/GhostService.ts';
 
 describe('edit ghost page model service', () => {
-    // state: 'LOADING' | 'ERROR' | 'DENIED' | 'INITIAL' | 'SUBMITTING';
-    // name: string;
-    // isCaught: boolean;
-    // error?: string;
-    //
-    // Input: GET query, PATCH mutation
     it('returns model when ghost is being fetched', () => {
         const queries = [
             { isLoading: true, error: null },
