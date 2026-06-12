@@ -14,6 +14,7 @@ export function createEditGhostPageModel(
         error: Error | null;
     },
     mutation: { isPending: boolean; error: Error | null },
+    formError?: unknown,
 ):
     | { state: 'LOADING' }
     | { state: 'ERROR' }
@@ -40,11 +41,21 @@ export function createEditGhostPageModel(
         return { state: 'DENIED' };
     }
 
+    let error: undefined | string;
+
+    if (mutation.error) {
+        error = 'Something went wrong';
+    }
+
+    if (formError instanceof FormValidationError) {
+        error = formError.errors[0];
+    }
+
     return {
         state: mutation.isPending ? 'SUBMITTING' : 'INITIAL',
         name: query.data.name,
         isCaught: query.data.flags.includes('caught'),
-        error: mutation.error ? 'Something went wrong' : undefined,
+        error: error,
     };
 }
 

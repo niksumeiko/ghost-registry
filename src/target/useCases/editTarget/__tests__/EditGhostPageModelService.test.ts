@@ -124,6 +124,31 @@ describe('edit ghost page model service', () => {
             error: 'Something went wrong',
         });
     });
+
+    it('returns model when updated ghost candidate is invalid', () => {
+        const query = {
+            isLoading: false,
+            error: null,
+            data: {
+                id: 'x',
+                name: 'y',
+                classification: 'z',
+                firstSeen: '01-01-2001',
+                flags: ['editable'],
+            } satisfies Ghost,
+        };
+        const mutation = { isPending: false, error: new Error() };
+        const formError = new FormValidationError(['z']);
+
+        const result = createEditGhostPageModel(query, mutation, formError);
+
+        expect(result).toEqual({
+            state: 'INITIAL',
+            name: 'y',
+            isCaught: false,
+            error: 'z',
+        });
+    });
 });
 
 describe('payload retrieval', () => {
