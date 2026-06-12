@@ -1,5 +1,11 @@
 import type { Ghost } from '../../domain/GhostService.ts';
 
+export class FormValidationError extends Error {
+    constructor(public errors: string[]) {
+        super('Validation failed');
+    }
+}
+
 export function createEditGhostPageModel(
     query: {
         isLoading: boolean;
