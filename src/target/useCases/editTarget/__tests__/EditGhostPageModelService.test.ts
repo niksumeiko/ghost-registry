@@ -1,5 +1,9 @@
 import { describe, expect, it } from 'vitest';
-import { createEditGhostPageModel } from '../EditGhostPageModelService.ts';
+import {
+    createEditGhostPageModel,
+    FormValidationError,
+    getValidPayloadOrThrow,
+} from '../EditGhostPageModelService.ts';
 import type { Ghost } from '../../../domain/GhostService.ts';
 
 describe('edit ghost page model service', () => {
@@ -118,6 +122,87 @@ describe('edit ghost page model service', () => {
             name: 'y',
             isCaught: false,
             error: 'Something went wrong',
+        });
+    });
+});
+
+describe('payload retrieval', () => {
+    it('throws when ghost name is missing', () => {
+        const formData = new FormData();
+        formData.set('name', '');
+        const ghost = { id: 'x', flags: [] };
+
+        try {
+            getValidPayloadOrThrow(formData, ghost);
+            expect.unreachable();
+        } catch (error) {
+            const result = error as FormValidationError;
+
+            expect(result).toBeInstanceOf(FormValidationError);
+            expect(result.errors).toEqual(['Missing ghost name']);
+        }
+    });
+
+    it('throws when ghost name is invalid', () => {
+        const formData = new FormData();
+        formData.set('name', '1');
+        const ghost = { id: 'x', flags: [] };
+
+        try {
+            getValidPayloadOrThrow(formData, ghost);
+            expect.unreachable();
+        } catch (error) {
+            const result = error as FormValidationError;
+
+            expect(result).toBeInstanceOf(FormValidationError);
+            expect(result.errors).toEqual(['Ghost name can have only letters']);
+        }
+    });
+
+    it('throws when ghost name is over max length', () => {
+        const formData = new FormData();
+        formData.set('name', 'x'.repeat(11));
+        const ghost = { id: 'y', flags: [] };
+
+        try {
+            getValidPayloadOrThrow(formData, ghost);
+            expect.unreachable();
+        } catch (error) {
+            const result = error as FormValidationError;
+
+            expect(result).toBeInstanceOf(FormValidationError);
+            expect(result.errors).toEqual([
+                "Ghost name can't be over 10 letters",
+            ]);
+        }
+    });
+
+    it('returns payload when ghost was caught', () => {
+        const formData = new FormData();
+        formData.set('name', 'x');
+        formData.set('caught', 'on');
+        const ghost = { id: 'y', flags: [] };
+
+        const result = getValidPayloadOrThrow(formData, ghost);
+
+        expect(result).toEqual({
+            id: 'y',
+            name: 'x',
+            flags: ['caught'],
+        });
+    });
+
+    it("returns payload when ghost wasn't caught", () => {
+        const formData = new FormData();
+        formData.set('name', 'x');
+        const ghost = { id: 'y', flags: ['editable'] satisfies Ghost['flags'] };
+
+        const result = getValidPayloadOrThrow(formData, ghost);
+
+        expect(result).toEqual({
+            id: 'y',
+            name: 'x',
+            flags: ['editable'],
         });
     });
 });

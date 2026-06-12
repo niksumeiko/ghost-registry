@@ -1,3 +1,4 @@
+import z from 'zod';
 import type { Ghost } from '../../domain/GhostService.ts';
 
 export class FormValidationError extends Error {
@@ -44,5 +45,44 @@ export function createEditGhostPageModel(
         name: query.data.name,
         isCaught: query.data.flags.includes('caught'),
         error: mutation.error ? 'Something went wrong' : undefined,
+    };
+}
+
+export function getValidPayloadOrThrow(
+    formData: FormData,
+    ghost: Pick<Ghost, 'id' | 'flags'>,
+) {
+    const schema = z.object({
+        name: z
+            .string()
+            .min(1, 'Missing ghost name')
+            .max(10, "Ghost name can't be over 10 letters")
+            .regex(/^[a-zA-Z]*$/, 'Ghost name can have only letters'),
+        caught: z.boolean(),
+    });
+
+    const { success, error, data } = schema.safeParse({
+        name: formData.get('name'),
+        caught: formData.has('caught'),
+    });
+
+    if (!success) {
+        const errors = error.issues.map(({ message }) => message);
+
+        throw new FormValidationError(errors);
+    }
+
+    const flags: Ghost['flags'] = ghost.flags.filter(
+        (flag) => flag !== 'caught',
+    );
+
+    if (data.caught) {
+        flags.push('caught');
+    }
+
+    return {
+        id: ghost.id,
+        name: data.name,
+        flags,
     };
 }

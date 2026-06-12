@@ -17,7 +17,10 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import { Link, useParams } from 'react-router-dom';
 import { fetchGhostById, updateGhostById } from '../../domain/GhostAdapter.ts';
 import { Ghost } from '../../domain/GhostService.ts';
-import { createEditGhostPageModel } from './EditGhostPageModelService.ts';
+import {
+    createEditGhostPageModel,
+    getValidPayloadOrThrow,
+} from './EditGhostPageModelService.ts';
 
 export const EditGhostPage = () => {
     const { id } = useParams() as { id: string };
