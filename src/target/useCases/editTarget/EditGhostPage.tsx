@@ -13,8 +13,8 @@ import {
     Stripe,
     TextInput,
 } from '@design-system';
-import { useMutation, useQuery } from '@tanstack/react-query';
-import { Link, useParams } from 'react-router-dom';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import { fetchGhostById, updateGhostById } from '../../domain/GhostAdapter.ts';
 import { Ghost } from '../../domain/GhostService.ts';
 import {
@@ -24,16 +24,25 @@ import {
 
 export const EditGhostPage = () => {
     const { id } = useParams() as { id: string };
+    const navigate = useNavigate();
     const query = useQuery({
         queryKey: ['ghost', id],
         queryFn: () => fetchGhostById(id),
     });
+    const queryClient = useQueryClient();
     const mutation = useMutation({
         mutationFn: ({
             id,
             ...changes
         }: Pick<Ghost, 'id' | 'name' | 'flags'>) => {
             return updateGhostById(id, changes);
+        },
+        onSuccess: async (data) => {
+            await Promise.all([
+                queryClient.invalidateQueries({ queryKey: ['next-target'] }),
+                queryClient.invalidateQueries({ queryKey: ['ghost', data.id] }),
+            ]);
+            navigate('/next-target');
         },
     });
     const [formError, setFormError] = useState<unknown>();
