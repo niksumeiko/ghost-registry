@@ -7,6 +7,5 @@ beforeMount<{ path?: string }>(async ({ App, hooksConfig }) => {
         window.history.replaceState(null, '', hooksConfig.path);
     }
 
-    // @ts-expect-error -- Playwright types App as generic
     return <App />;
 });

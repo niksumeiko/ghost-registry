@@ -9,6 +9,7 @@ export function Stripe({
 
     return (
         <div
+            data-testid="stripe"
             className={cx('p-2.5 flex items-center', {
                 'bg-violet-400': variant === 'primary',
                 'bg-violet-300 px-10': variant === 'secondary',

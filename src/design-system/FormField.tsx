@@ -8,7 +8,8 @@ import {
 export function FormField({
     label,
     children,
-}: PropsWithChildren<{ label: string }>) {
+    testId,
+}: PropsWithChildren<{ label: string, testId?: string }>) {
     const id = useId();
 
     const enhanced =
@@ -20,7 +21,7 @@ export function FormField({
             : children;
 
     return (
-        <div className="flex flex-col gap-1 mb-3">
+        <div data-testId={testId} className="flex flex-col gap-1 mb-3">
             <label htmlFor={id} className="text-sm font-medium text-gray-600">
                 {label}
             </label>

@@ -1,16 +1,18 @@
-import { Link } from 'react-router-dom';
-import { Layout, Stripe, Logo, Nav, NavItem } from '@design-system';
+import {Link} from 'react-router-dom';
+import {Layout, Logo, Nav, NavItem, Stripe} from '@design-system';
 
-export const NavigationPage = () => {
-    return (
+export const NavigationPage = () =>
+    (
         <Layout>
             <Stripe>
-                <Logo variant="xl" />
+                <Logo variant="xl"/>
             </Stripe>
             <Nav>
                 <NavItem>
                     <Link to="/restricted">Targets</Link>
-                </NavItem>
+                </NavItem> <NavItem>
+                <Link data-testid="next-target" to="/next-target">Next Target</Link>
+            </NavItem>
                 <NavItem>
                     <Link to="/restricted">Ghost Registry</Link>
                 </NavItem>
@@ -38,4 +40,3 @@ export const NavigationPage = () => {
             </Nav>
         </Layout>
     );
-};

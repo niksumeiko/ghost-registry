@@ -17,6 +17,7 @@ export default defineConfig({
     use: {
         trace: 'on-first-retry',
         ctPort: 3100,
+        baseURL: 'http://localhost:3100',
         ctViteConfig: {
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             plugins: [tailwindcss() as any],

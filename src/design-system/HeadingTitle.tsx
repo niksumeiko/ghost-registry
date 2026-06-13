@@ -13,10 +13,12 @@ const size = {
 export const HeadingTitle = ({
     children,
     level,
+    testId,
     icon,
     indent = false,
 }: PropsWithChildren<{
     level: 1 | 2 | 3 | 4 | 5 | 6;
+    testId?: string;
     icon?: ReactNode;
     indent?: boolean;
 }>) => {
@@ -24,6 +26,7 @@ export const HeadingTitle = ({
 
     return (
         <Tag
+            data-testid={testId}
             className={cx(`flex items-center gap-2 text-2xl ${size[Tag]}`, {
                 'ml-4': indent,
             })}
